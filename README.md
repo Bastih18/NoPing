@@ -43,8 +43,8 @@ noping <ip> [OPTIONS]
 | `-c, --count <count>` | Number of pings (default: 65535) |
 | `-t, --timeout <ms>` | Timeout in milliseconds (default: 1000) |
 | `-m, --minimal` | Minimal output mode. |
-| `--proto <tcp/udp>` | Protocol to use when a port is specified (default: TCP) |
 | `-v, --version` | Print detailed version information.
+| `--proto <tcp/udp>` | Protocol to use when a port is specified (default: TCP) |
 | `--update …[version]` | Update noping to the specified version (when empty, it updates to the latest version).
 
 ## Examples
