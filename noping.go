@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -14,7 +15,17 @@ import (
 	"github.com/Bastih18/NoPing/methods"
 )
 
-const headerText = "noping v1.0.0 - Copyright (c) 2025 bastih18"
+var headerText string
+
+func init() {
+	version := "dev"
+	if info, ok := debug.ReadBuildInfo(); ok {
+		if info.Main.Version != "" && info.Main.Version != "(devel)" {
+			version = info.Main.Version
+		}
+	}
+	headerText = fmt.Sprintf("noping %s - Copyright (c) 2025 bastih18", version)
+}
 
 func main() {
 	signalChan := make(chan os.Signal, 1)
