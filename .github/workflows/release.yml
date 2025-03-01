@@ -28,7 +28,7 @@ jobs:
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
           path: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
