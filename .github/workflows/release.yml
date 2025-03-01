@@ -2,32 +2,27 @@ name: Auto Release Tag NoPing
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Get Latest Tag
-        id: get_tag
+      - name: Set up Git
         run: |
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Increment Version
-        id: version
+      - name: Push new tag
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          latest_tag=${{ env.latest_tag }}
-          new_version=$(echo $latest_tag | awk -F. '{print $1"."$2"."$3+1}')
-          echo "new_version=v$new_version" >> $GITHUB_ENV
-
-      - name: Create New Tag
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git tag ${{ env.new_version }}
-          git push origin ${{ env.new_version }}
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          new_version="v$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')"
+          git tag $new_version
+          git push origin $new_version
