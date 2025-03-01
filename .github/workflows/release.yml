@@ -65,10 +65,25 @@ jobs:
             chmod +x "$file"  # Ensure executables have correct permissions
           done
 
+      - name: Generate Changelog
+        run: |
+          git fetch --tags  # Ensure all tags are available
+          PREV_TAG=$(git tag --sort=-v:refname | sed -n 2p)  # Get previous tag
+          CURR_TAG=${{ github.event.inputs.tag || github.ref_name }}
+
+          if [[ -z "$PREV_TAG" ]]; then
+            PREV_TAG=$(git rev-list --max-parents=0 HEAD)  # Fallback to first commit
+          fi
+
+          echo "## Changelog" > RELEASE_NOTES.md
+          git log --pretty=format:"- %s" "$PREV_TAG"..HEAD >> RELEASE_NOTES.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: Release ${{ github.event.inputs.tag || github.ref_name }}
+          body_path: RELEASE_NOTES.md  # ✅ Adds changelog to the release description
           files: artifacts/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
