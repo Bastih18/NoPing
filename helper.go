@@ -6,8 +6,9 @@ import (
 	"io"
 	"net"
 	"net/http"
-	"noping/globals"
 	"os"
+
+	"github.com/Bastih18/NoPing/globals"
 )
 
 func getASNGeoInfo(ip string) (string, globals.GeoInfo) {

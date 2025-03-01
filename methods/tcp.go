@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"noping/globals"
-	ps "noping/printStats"
+	"github.com/Bastih18/NoPing/globals"
+	ps "github.com/Bastih18/NoPing/printStats"
 
 	"github.com/fatih/color"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"noping/globals"
+	"github.com/Bastih18/NoPing/globals"
 
 	"github.com/fatih/color"
 )

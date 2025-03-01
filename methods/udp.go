@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"noping/globals"
+	"github.com/Bastih18/NoPing/globals"
 
-	ps "noping/printStats"
+	ps "github.com/Bastih18/NoPing/printStats"
 
 	"github.com/fatih/color"
 )

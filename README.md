@@ -25,7 +25,7 @@ git clone https://github.com/Bastih18/NoPing.git
 cd NoPing
 go build -o noping .
 ```
-
+For local development please follow the [Local Development Guide](https://github.com/Bastih18/NoPing/blob/main/SETUP_LOCAL_DEV.md)
 ## Usage
 
 ```bash

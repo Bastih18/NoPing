@@ -7,13 +7,13 @@ import (
 	"os"
 	"time"
 
-	"noping/globals"
+	"github.com/Bastih18/NoPing/globals"
 
 	"github.com/fatih/color"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
 
-	ps "noping/printStats"
+	ps "github.com/Bastih18/NoPing/printStats"
 )
 
 func ICMPPing(host net.Addr, count int, timeoutMs int) {

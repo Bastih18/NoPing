@@ -10,8 +10,8 @@ import (
 
 	"github.com/fatih/color"
 
-	"noping/globals"
-	"noping/methods"
+	"github.com/Bastih18/NoPing/globals"
+	"github.com/Bastih18/NoPing/methods"
 )
 
 const headerText = "noping v1.0.0 - Copyright (c) 2025 bastih18"
