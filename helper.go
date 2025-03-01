@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -40,7 +41,16 @@ func getASNGeoInfo(ip string) (string, globals.GeoInfo) {
 }
 
 func getReverseDNS(ip string) string {
-	names, err := net.LookupAddr(ip)
+	resolver := &net.Resolver{
+		PreferGo: true,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			d := net.Dialer{Timeout: 2 * time.Second}
+			return d.DialContext(ctx, "udp", "1.1.1.1:53")
+		},
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	names, err := resolver.LookupAddr(ctx, ip)
 	if err != nil || len(names) == 0 {
 		return "No hostname found"
 	}
