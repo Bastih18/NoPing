@@ -8,7 +8,7 @@ on:
         required: true
   push:
     tags:
-      - "v[1-9]*.*.*"  # ✅ Matches v1.0.0, v2.5.1, v10.3.4, etc.
+      - "v[1-9]*.*.*"  # Only trigger on v1.x.x or higher
 
 jobs:
   build:
@@ -29,14 +29,22 @@ jobs:
 
       - name: Build
         run: |
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
+          # Set the correct file extension for Windows
+          EXT=""
+          if [[ "${{ matrix.goos }}" == "windows" ]]; then
+            EXT=".exe"
+          fi
+          
+          # Build the binary with the correct name
+          OUTPUT="noping-${{ matrix.goos }}-${{ matrix.goarch }}$EXT"
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o $OUTPUT
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
-
+          name: noping-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: noping-${{ matrix.goos }}-${{ matrix.goarch }}*
+  
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -50,11 +58,12 @@ jobs:
         with:
           path: artifacts
 
-      - name: Create Git Tag (For Manual Runs)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Rename and Prepare Artifacts
         run: |
-          git tag ${{ github.event.inputs.tag }}
-          git push origin ${{ github.event.inputs.tag }}
+          cd artifacts
+          for file in noping-*; do
+            chmod +x "$file"  # Ensure executables have correct permissions
+          done
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
