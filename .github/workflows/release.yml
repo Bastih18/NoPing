@@ -1,0 +1,49 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:  # Manually trigger workflow
+  push:
+    tags:
+      - "v*"  # Triggers on version tags like v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build
+        run: |
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: myprogram-${{ matrix.goos }}-${{ matrix.goarch }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/**
+          token: ${{ secrets.GITHUB_TOKEN }}
