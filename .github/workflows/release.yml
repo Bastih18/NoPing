@@ -38,9 +38,16 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
+      - name: Authenticate with GH_PAT
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git remote set-url origin https://$GH_PAT@github.com/Bastih18/NoPing.git
+          git fetch --unshallow  # Ensures full history for tagging
+
       - name: Create and Push Tag
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}  # Use the token from secrets
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git tag ${{ env.new_version }}
-          git push https://x-access-token:$GH_PAT@github.com/Bastih18/NoPing.git ${{ env.new_version }}
+          git push origin ${{ env.new_version }}
