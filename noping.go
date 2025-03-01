@@ -119,6 +119,14 @@ func main() {
 			fmt.Println("")
 			fmt.Println("For more information, visit https://github.com/Bastih18/NoPing")
 			os.Exit(0)
+		case "--update":
+			// give the ability to update to a specific version
+			if len(args) > 1 {
+				updateNoping(args[i+1])
+			} else {
+				updateNoping("")
+			}
+			os.Exit(0)
 		}
 	}
 	if port == -1 {
