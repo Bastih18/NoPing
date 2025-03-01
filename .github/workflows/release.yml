@@ -1,4 +1,4 @@
-name: Auto Tag & Release
+name: Auto Increment Tag
 
 on:
   push:
@@ -6,53 +6,36 @@ on:
       - main
 
 jobs:
-  tag_release:
+  increment-tag:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Get Latest Tag
-        id: get_tag
-        run: |
-          latest_tag=$(git tag --sort=-v:refname | head -n 1)
-          if [[ -z "$latest_tag" ]]; then
-            latest_tag="v0.0.0"
-          fi
-          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
-
-      - name: Increment Version
-        id: version
-        run: |
-          latest_tag=${{ env.latest_tag }}
-          major=$(echo $latest_tag | cut -d. -f1 | sed 's/v//')
-          minor=$(echo $latest_tag | cut -d. -f2)
-          patch=$(echo $latest_tag | cut -d. -f3)
-          new_patch=$((patch + 1))
-          new_version="v$major.$minor.$new_patch"
-          echo "new_version=$new_version" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Configure Git
         run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
 
-      - name: Manually Set Git Remote to Use GH_PAT
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+      - name: Get latest tag and calculate new tag
+        id: tag
         run: |
-          git remote remove origin
-          git remote add origin https://$GH_PAT@github.com/Bastih18/NoPing.git
-          git fetch --unshallow
+          # Get the latest tag sorted in descending order (by version)
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          echo "Latest tag: $latest_tag"
+          
+          # If no tag exists, start from 1; otherwise, strip non-numeric prefix and increment the numeric portion
+          if [ -z "$latest_tag" ]; then
+            new_tag="1"
+          else
+            num=$(echo "$latest_tag" | sed 's/^[^0-9]*//')
+            new_tag=$((num + 1))
+          fi
+          echo "New tag: $new_tag"
+          echo "::set-output name=new_tag::$new_tag"
 
-      - name: Debug Git Authentication (Optional)
+      - name: Create and push new tag
         run: |
-          git remote -v
-
-      - name: Create and Push Tag
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          git tag ${{ env.new_version }}
-          git push origin ${{ env.new_version }}
+          new_tag=${{ steps.tag.outputs.new_tag }}
+          git tag "$new_tag"
+          git push origin "$new_tag"
