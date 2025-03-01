@@ -7,8 +7,13 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/Bastih18/NoPing/globals"
+	"github.com/fatih/color"
 )
 
 func getASNGeoInfo(ip string) (string, globals.GeoInfo) {
@@ -50,4 +55,51 @@ func getIpFromDomain(host string) net.Addr {
 		return nil
 	}
 	return ips
+}
+
+func getLatestVersion(current string) (string, string, string) {
+	const url = "https://api.github.com/repos/Bastih18/NoPing/tags"
+	client := http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Get(url)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return "Could not fetch", color.YellowString("are maybe"), "the latest"
+	}
+	defer resp.Body.Close()
+	var tags []struct {
+		Name string `json:"name"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&tags); err != nil || len(tags) == 0 {
+		return "Could not decode", color.YellowString("are maybe"), "the latest"
+	}
+	latest := tags[0].Name
+	if current == latest {
+		return latest, color.GreenString("are"), "the latest"
+	}
+	if current == "dev" {
+		return latest, color.GreenString("are"), color.CyanString("the dev")
+	}
+	const pattern = `^v\d+\.\d+\.\d+$`
+	re := regexp.MustCompile(pattern)
+	if re.MatchString(current) && re.MatchString(latest) {
+		if cmp := compareVersions(current, latest); cmp < 0 {
+			return latest, color.RedString("are"), color.RedString("an outdated")
+		} else if cmp > 0 {
+			return latest, color.GreenString("are"), color.CyanString("an ahead")
+		}
+	}
+	return latest, color.YellowString("are maybe"), "unable to compare versions"
+}
+
+func compareVersions(v1, v2 string) int {
+	p1, p2 := strings.Split(v1[1:], "."), strings.Split(v2[1:], ".")
+	for i := 0; i < 3; i++ {
+		n1, _ := strconv.Atoi(p1[i])
+		n2, _ := strconv.Atoi(p2[i])
+		if n1 < n2 {
+			return -1
+		} else if n1 > n2 {
+			return 1
+		}
+	}
+	return 0
 }

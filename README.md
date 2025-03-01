@@ -44,6 +44,7 @@ noping <ip> [OPTIONS]
 | `-t, --timeout <ms>` | Timeout in milliseconds (default: 1000) |
 | `-m, --minimal` | Minimal output mode. |
 | `--proto <tcp/udp>` | Protocol to use when a port is specified (default: TCP) |
+| `-v, --version` | Print detailed version information.
 
 ## Examples
 

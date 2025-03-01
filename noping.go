@@ -16,9 +16,10 @@ import (
 )
 
 var headerText string
+var version string
 
 func init() {
-	version := "dev"
+	version = "dev"
 	if info, ok := debug.ReadBuildInfo(); ok {
 		if info.Main.Version != "" && info.Main.Version != "(devel)" {
 			version = info.Main.Version
@@ -47,7 +48,7 @@ func main() {
 	minimal := false
 	protocol := "tcp"
 
-	args := os.Args[2:]
+	args := os.Args[1:]
 	for i, arg := range args {
 		switch arg {
 		case "-h", "--help":
@@ -107,6 +108,17 @@ func main() {
 				fmt.Printf("❌ You must specify a protocol when using the %s argument\n", arg)
 				os.Exit(0)
 			}
+		case "-v", "--version":
+			fmt.Println(headerText)
+			fmt.Println("")
+			fmt.Printf("Version: %s\n", color.GreenString(version))
+			latestVersion, whatAmI, onVersion := getLatestVersion(version)
+			fmt.Printf("Latest version: %s\n", color.BlueString(latestVersion))
+			// You are / are not using the latest version
+			fmt.Printf("You %s using %s version\n", whatAmI, onVersion)
+			fmt.Println("")
+			fmt.Println("For more information, visit https://github.com/Bastih18/NoPing")
+			os.Exit(0)
 		}
 	}
 	if port == -1 {
