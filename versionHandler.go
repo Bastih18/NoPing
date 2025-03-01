@@ -63,7 +63,7 @@ func compareVersionsAndReturn(latest, current string) (string, string, string) {
 			return latest, color.GreenString("are"), color.CyanString("an ahead")
 		}
 	}
-	return latest, color.YellowString("are maybe"), "unable to compare versions"
+	return latest, color.YellowString("are maybe"), "the latest"
 }
 
 func loadCache() (*VersionCache, error) {
