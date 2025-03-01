@@ -1,28 +1,46 @@
-name: Auto Release Tag NoPing
+name: Auto Tag & Release
 
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 
 jobs:
-  release:
+  tag_release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Set up Git
+      - name: Get Latest Tag
+        id: get_tag
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          if [[ -z "$latest_tag" ]]; then
+            latest_tag="v0.0.0"
+          fi
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
-      - name: Push new tag
+      - name: Increment Version
+        id: version
+        run: |
+          latest_tag=${{ env.latest_tag }}
+          major=$(echo $latest_tag | cut -d. -f1 | sed 's/v//')
+          minor=$(echo $latest_tag | cut -d. -f2)
+          patch=$(echo $latest_tag | cut -d. -f3)
+          new_patch=$((patch + 1))
+          new_version="v$major.$minor.$new_patch"
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Create and Push Tag
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}  # Use the token from secrets
         run: |
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          new_version="v$(echo $latest_tag | awk -F. -v OFS=. '{$NF++;print}')"
-          git tag $new_version
-          git push origin $new_version
+          git tag ${{ env.new_version }}
+          git push https://x-access-token:$GH_PAT@github.com/Bastih18/NoPing.git ${{ env.new_version }}
