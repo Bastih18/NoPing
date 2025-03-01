@@ -18,6 +18,6 @@ func printHelpMenu() {
 	fmt.Println("    -m, --minimal                  print only the minimum information (default: false) [OPTIONAL]")
 	fmt.Println("    -v, --version                  print detailed version information")
 	fmt.Println("    --proto <protocol (tcp/udp)>   protocol to use (default: tcp) [OPTIONAL]")
-	fmt.Println("    --update …[version]            update noping to the specified version (when empty, it updates to the latest version)")
+	fmt.Println("    --update [version]             update noping to the specified version (when empty, it updates to the latest version)")
 	fmt.Println("")
 }
