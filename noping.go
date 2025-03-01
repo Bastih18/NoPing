@@ -136,7 +136,7 @@ func main() {
 		asnInfo, geoInfo := getASNGeoInfo(rawIp.String())
 		fmt.Printf("🌍 Target: %s (%s)\n", map[bool]string{true: fmt.Sprintf("%s [%s]", boldYellow.Sprint(ip), boldYellow.Sprint(rawIp)), false: boldYellow.Sprint(rawIp)}[rawIp.String() != ip], color.BlueString(asnInfo))
 		fmt.Printf("📍 Location: %s\n", boldYellow.Sprint(map[bool]string{true: geoInfo.City + ", " + geoInfo.Region + ", " + geoInfo.Country, false: "Unknown"}[geoInfo.City != "nil" && geoInfo.City != ""]))
-		fmt.Printf("🔄 Reverse DNS: %s\n\n", boldYellow.Sprint(getReverseDNS(rawIp.String())))
+		// fmt.Printf("🔄 Reverse DNS: %s\n\n", boldYellow.Sprint(getReverseDNS(rawIp.String())))
 	}
 
 	if protocol == "icmp" {

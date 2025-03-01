@@ -9,7 +9,7 @@
 - Defaults to ICMP when no port is specified.
 - Customizable port, timeout and amount of pings.
 - Minimal output mode for clean results.
-- Provides reverse DNS lookup, ASN data, and geo-location data.
+- Provides ASN data, and geo-location data.
 - Fast and efficient.
 
 
