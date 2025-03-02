@@ -45,6 +45,7 @@ noping <ip> [OPTIONS]
 | `-m, --minimal` | Minimal output mode. |
 | `-v, --version` | Print detailed version information.
 | `--proto <tcp/udp>` | Protocol to use when a port is specified (default: TCP) |
+| `-pa, --packet <packet>` | Packet to send to UDP target (default: tries to find a valid packet based on port) |
 | `--update [version]` | Update noping to the specified version (when empty, it updates to the latest version).
 
 ## Examples

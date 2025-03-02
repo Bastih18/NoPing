@@ -17,6 +17,7 @@ func printHelpMenu() {
 	fmt.Println("    -t, --timeout <timeout>        timeout in milliseconds (default: 1000) [OPTIONAL]")
 	fmt.Println("    -m, --minimal                  print only the minimum information (default: false) [OPTIONAL]")
 	fmt.Println("    -v, --version                  print detailed version information")
+	fmt.Println("    -pa, --packet <packet>         packet to send to UDP target (default: tries to find a valid packet based on port)")
 	fmt.Println("    --proto <protocol (tcp/udp)>   protocol to use (default: tcp) [OPTIONAL]")
 	fmt.Println("    --update [version]             update noping to the specified version (when empty, it updates to the latest version)")
 	fmt.Println("")
