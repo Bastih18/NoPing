@@ -47,6 +47,7 @@ func main() {
 	timeout := 1000
 	minimal := false
 	protocol := "tcp"
+	packet := "auto"
 
 	args := os.Args[1:]
 	for i, arg := range args {
@@ -108,6 +109,12 @@ func main() {
 				fmt.Printf("❌ You must specify a protocol when using the %s argument\n", arg)
 				os.Exit(0)
 			}
+		case "-pa", "--packet":
+			if i+1 < len(args) && args[i+1][0] != '-' {
+				packet = args[i+1]
+			} else {
+				fmt.Printf("❌ You must specify a packet when using the %s argument\n", arg)
+			}
 		case "-v", "--version":
 			fmt.Println(headerText)
 			fmt.Println("")
@@ -152,6 +159,6 @@ func main() {
 	} else if protocol == "tcp" {
 		methods.TCPPing(rawIp.String(), port, count, time.Duration(timeout)*time.Millisecond)
 	} else if protocol == "udp" {
-		methods.UDPPing(rawIp.String(), port, count, time.Duration(timeout)*time.Millisecond)
+		methods.UDPPing(rawIp.String(), port, time.Duration(timeout)*time.Millisecond, packet, count)
 	}
 }
