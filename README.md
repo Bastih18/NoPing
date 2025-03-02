@@ -5,7 +5,7 @@
 
 ## Features
 
-- Supports ICMP, TCP, and UDP pinging.
+- Supports ICMP, TCP, and UDP pinging (UDP is currently experimental).
 - Defaults to ICMP when no port is specified.
 - Customizable port, timeout and amount of pings.
 - Minimal output mode for clean results.
